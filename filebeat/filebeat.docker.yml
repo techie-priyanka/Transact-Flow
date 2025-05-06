@@ -1,0 +1,31 @@
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+      templates:
+        - condition:
+            contains:
+              docker.container.name: "distributed-job-processor-app"
+          config:
+            - type: container
+              paths:
+                - /var/lib/docker/containers/${data.docker.container.id}/*.log
+            
+
+    - type: docker
+      hints.enabled: true
+      templates:
+        - condition:
+            contains:
+              docker.container.name: "distributed-job-processor-postgres"
+          config:
+            - type: container
+              paths:
+                - /var/lib/docker/containers/${data.docker.container.id}/*.log
+
+
+output.elasticsearch:
+  hosts: ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+  
+
+
